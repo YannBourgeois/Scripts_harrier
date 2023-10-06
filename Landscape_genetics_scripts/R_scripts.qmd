@@ -1,0 +1,306 @@
+---
+title: "Scripts_harrier"
+author: "YBourgeois"
+date: "2023-10-05"
+output: html_document
+---
+
+## Plotting DAPC results
+
+```{r dapc1, include=TRUE}
+
+setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/")
+###Edit the PATH before starting anything.
+
+
+library(adegenet)
+a<-read.PLINK("DAPC.raw", map.file = "DAPC.map", n.cores = 1)
+
+###Identifying most likely number of clusters
+#grp <- find.clusters(a,max.n.clust=5,n.pca=100)
+###2 clusters. You can test this yourself by uncommenting.
+
+grp2 <- find.clusters(a,n.clust=2,n.pca=100)
+
+###How many axes to keep
+dapctest <- dapc(a, grp2$grp,n.da=2, n.pca=100)
+temp1 <- optim.a.score(dapctest)
+##Keep 1 PC axes (same for datasets with and without outgroups)
+dapc2 <- dapc(a,grp2$grp,n.da=2, n.pca=1)
+
+myCol <- c("green","red")
+scatter(dapc2, col=myCol,scree.da=FALSE, bg="white", pch=20, cell=0, cstar=0, solid=.4,cex=3,clab=0, leg=TRUE)
+
+
+write.table(dapc2$posterior,file="DAPC_2_clusters_final.txt",sep="\t",quote=F,col.names=F)
+```
+
+```{r dapc2, include=TRUE}
+
+library(tess3r)
+library(maps)
+library(ggplot2)
+library(rworldmap)
+library(rworldxtra)
+library("rgdal") ## Defines functions to transform spatial elements
+
+###map.polygon <- getMap(resolution = "high")
+projection_none <- "+proj=longlat +datum=WGS84"
+projection_mercator <- "+proj=merc +datum=WGS84"
+load("REU_adm0.RData")
+reu_obj<-gadm ; rm(gadm)
+
+coords<-read.table("Info_samples_Coordinates_position_plink_files.txt",h=T)[,c(1,4,5)]
+#File containing info about the name of the individual in the VCF, the coordinates, and the relative order in the ped files from PLINK
+
+tmp<-cbind(as.data.frame(rownames(dapc2$posterior)),as.data.frame(dapc2$posterior))
+colnames(tmp)<-c("ind","Cluster_1","Cluster_2")
+DAPC<-merge(coords,tmp,by="ind")
+q.matrix <- as.matrix(DAPC[,c(5,4)]) 
+coords<-DAPC[,c(3,2)]
+pl <- ggtess3Q(q.matrix, coords, map.polygon =  reu_obj)
+pl +
+  geom_path(data =  reu_obj, aes(x = long, y = lat, group = group)) +
+    xlim(55,56) + 
+  ylim(-21.5, -20.75) + 
+  coord_equal() + 
+  geom_point(data =DAPC,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =DAPC, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="red", mid="white",high="green", space ="Lab" )
+
+```
+
+## Plotting ADMIXTURE results
+
+```{r admix, include=TRUE}
+
+
+library(tess3r)
+library(maps)
+library(ggplot2)
+library(rworldmap)
+library(rworldxtra)
+library("rgdal") ## Defines functions to transform spatial elements
+
+###map.polygon <- getMap(resolution = "high")
+projection_none <- "+proj=longlat +datum=WGS84"
+projection_mercator <- "+proj=merc +datum=WGS84"
+load("REU_adm0.RData")
+reu_obj<-gadm ; rm(gadm)
+
+admix<-read.table("ADMIXTURE_K2.txt")
+colnames(admix)<-c("ind","Cluster_1","Cluster_2")
+coords<-read.table("Info_samples_Coordinates_position_plink_files.txt",h=T)[,c(1,4,5)]
+ADMIX<-merge(coords,admix,by="ind")
+q.matrix <- as.matrix(ADMIX[,4:5])
+coords<-ADMIX[,c(3,2)]
+pl <- ggtess3Q(q.matrix, coords, map.polygon =  reu_obj)
+pl +
+  geom_path(data =  reu_obj, aes(x = long, y = lat, group = group)) +
+    xlim(55,56) + 
+  ylim(-21.5, -20.75) + 
+  coord_equal() + 
+  geom_point(data =ADMIX,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =ADMIX, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="green", mid="white",high="red", space ="Lab" )
+
+
+
+ggplot(ADMIX, aes(fill=condition, y=value, x=specie)) + 
+    geom_bar(position="fill", stat="identity")
+
+
+
+ 
+```
+
+## Check spatial distribution of sex, age categories
+
+This one is a sanity check to confirm that what we observe is not obviously related to sex or to the age structure of individuals.
+
+```{r check, include=TRUE}
+
+table=read.table("Info_samples_Sex_Age.txt",h=T)
+pl <- ggtess3Q(q.matrix, coords, map.polygon =  reu_obj) 
+pl + geom_path(data =  reu_obj, aes(x = long, y = lat)) + xlim(55,56) + 
+  ylim(-21.5, -20.75) + 
+  coord_equal() + 
+  geom_point(data =table,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data = table, aes(x = LON, y = LAT, color=SEXE), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw()
+
+
+
+pl + geom_path(data =  reu_obj, aes(x = long, y = lat)) + xlim(55,56) + 
+  ylim(-21.5, -20.75) + 
+  coord_equal() + 
+  geom_point(data =table,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data = table, aes(x = LON, y = LAT, color=AGE), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw()
+
+
+```
+
+## Estimate various F-statistics, Principal Component Analysis
+
+The first part of the script is, admittedly, a "bricolage" aiming at merging DAPC results with
+
+```{r Fstats, include=TRUE}
+
+library(vcfR)
+library(poppr)
+library(ape)
+library(RColorBrewer)
+
+
+rubi.VCF <- read.vcfR("VCF_M5_N7_80pc.vcf")
+pop.data <- DAPC
+
+ind_vcf<-as.data.frame(colnames(rubi.VCF@gt)[-1])
+colnames(ind_vcf)<-"ind"
+pop.data2<-merge(ind_vcf,pop.data,by="ind")
+pop.data<-pop.data2
+all(colnames(rubi.VCF@gt)[-1] == pop.data$ind) ###OK
+
+pop.data$pop<-ifelse(pop.data$Cluster_1<0.4,"Cluster_2","Cluster_1")
+pop.data$pop<-ifelse(pop.data$Cluster_1<0.6 & pop.data$Cluster_1>0.4,"admixed",pop.data$pop)
+
+```
+
+We can also use these R packages to perform a Principal Component Analysis and check that it matches with DAPC/ADMIXTURE
+
+```{r PCA, include=TRUE}
+
+pca.rubi <- vcfR2genlight(rubi.VCF)
+ploidy(pca.rubi) <- 2
+
+rubi.pca <- glPca(pca.rubi,nf=5)
+barplot(100*rubi.pca$eig/sum(rubi.pca$eig), col = heat.colors(50), main="PCA Eigenvalues")
+title(ylab="Percent of variance\nexplained", line = 2)
+title(xlab="Eigenvalues", line = 1)
+
+rubi.pca.scores <- as.data.frame(rubi.pca$scores)
+rubi.pca.scores$ind=rownames(rubi.pca.scores)
+rubi.pca.scores2<-merge(rubi.pca.scores,pop.data,by="ind")
+rubi.pca.scores=rubi.pca.scores2
+##Reorder pop.data so the order of individuals match. with dat Then import again
+
+
+cols <- brewer.pal(n = nPop(gl.rubi), name = "Dark2")
+
+library(ggplot2)
+set.seed(9)
+p <- ggplot(rubi.pca.scores, aes(x=PC1, y=PC2, colour=pop)) 
+p <- p + geom_point(size=4)
+p <- p + stat_ellipse(level = 0.95, size = 1)
+p <- p + scale_color_manual(values = cols) 
+p <- p + geom_hline(yintercept = 0) 
+p <- p + geom_vline(xintercept = 0) 
+p <- p + theme_bw()
+
+p+labs(y= "PC2, 5.58% variance explained",x = "PC1, 8.15% variance explained")+theme(text = element_text(size=20))
+```
+
+```{r Fstats2, include=TRUE}
+
+## The following websites may be useful:
+##https://cran.r-project.org/web/packages/hierfstat/vignettes/hierfstat.html
+#https://www2.unil.ch/popgen/teaching/WISG17/import.pdf #To import
+
+library(pegas)
+library(hierfstat)
+fn<-"VCF_M5_N7_80pc.vcf"
+x.l<-VCFloci(fn)
+base<-c("A","T","G","C")
+snps<-which(x.l$REF %in% base & x.l$ALT %in% base)
+x<-read.vcf(fn,which.loci=snps)
+
+
+dat<-genind2hierfstat(loci2genind(x),pop=pop.data$pop)
+##Reorder pop.data so the order of individuals match. with dat Then import again
+pop.data=pop.data[match(rownames(dat), pop.data$ind), ]  
+dat<-genind2hierfstat(loci2genind(x),pop=pop.data$pop)
+all.equal(rownames(dat),as.character(pop.data$ind)) ##Should be TRUE
+
+####Useful to inspect individual loci statistics
+results_Fstats<-basic.stats(dat)
+###For example, to get individual Fis:
+FIS<-as.data.frame(results_Fstats$Fis) 
+
+
+
+W_Cockerham<-pairwise.WCfst(dat)
+W_Cockerham
+#             admixed  Cluster_1  Cluster_2
+# admixed           NA 0.02049046 0.02699966
+# Cluster_1 0.02049046         NA 0.07733697
+# Cluster_2 0.02699966 0.07733697         NA
+
+###bootstraps and dosage needs numeric for pop ids. To edit so we can assign individuals better.
+
+dat$pop<-ifelse(dat$pop=="Cluster_1",1,dat$pop)
+dat$pop<-ifelse(dat$pop=="Cluster_2",2,dat$pop)
+dat$pop<-ifelse(dat$pop=="admixed",3,dat$pop)
+
+boot.ppfst(dat,n=1000)
+
+fis.gt<-fis.dosage(fstat2dos(dat[,-1]),pop=dat[,1]) 
+fis.gt
+
+boot.ppfis(dat)
+```
+
+## Plotting EEMS results
+
+To install the EEMS library, the following command can be used (Linux distribution)
+
+```{r eems, include=FALSE}
+
+setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/EEMS")
+###Edit the PATH before starting anything.
+install.packages(c("Rcpp", "RcppEigen", "raster", "rgeos", "sp"))
+##Sanity check
+if (dir.exists("rEEMSplots")) {
+ install.packages("rEEMSplots", repos = NULL, type = "source")
+ } else {
+ stop("Move to the directory that contains the rEEMSplots source to install the package.")
+ }
+```
+
+```{r eems2, include=FALSE}
+setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/EEMS")
+library("rEEMSplots")
+library("rgdal") ## Defines functions to transform spatial elements
+library("rworldmap") ## Defines world 
+load("../REU_adm0.RData")
+reu_obj<-gadm ; rm(gadm)
+plot(reu_obj)
+
+coords=read.table("input/VCF_M5_N7_80pc.coord")
+eems_results<-list("nDemes200-chain1")
+name_figures <-list("nDemes200-chain1/plot")
+eems.plots(mcmcpath = eems_results,
+plotpath = paste0(name_figures, "-shapefile"),
+longlat = FALSE, m.plot.xy = { plot(reu_obj, col = NA, add = TRUE); points(coords[,2:1],col="black",pch=16) }, q.plot.xy = { plot(reu_obj, col = NA, add = TRUE); points(coords[,2:1],col="black",pch=16) })
+
+```
+
+## Radish: estimate landscape resistivity
+
+You can also embed plots, for example:
+
+```{r radish, echo=FALSE}
+setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/EEMS")
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

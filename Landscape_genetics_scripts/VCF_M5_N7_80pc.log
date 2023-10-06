@@ -1,0 +1,29 @@
+PLINK v1.90b6.21 64-bit (19 Oct 2020)
+Options in effect:
+  --file VCF_M5_N7_80pc
+  --make-bed
+  --out VCF_M5_N7_80pc
+
+Hostname: MPLCLTLP0237
+Working directory: /home/yannbourgeois/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts
+Start time: Fri Oct  6 12:41:31 2023
+
+Random number seed: 1696588891
+31281 MB RAM detected; reserving 15640 MB for main workspace.
+Scanning .ped file... done.
+Performing single-pass .bed write (7955 variants, 60 people).
+--file: VCF_M5_N7_80pc-temporary.bed + VCF_M5_N7_80pc-temporary.bim +
+VCF_M5_N7_80pc-temporary.fam written.
+7955 variants loaded from .bim file.
+60 people (0 males, 0 females, 60 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to VCF_M5_N7_80pc.nosex .
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 60 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is 0.868184.
+7955 variants and 60 people pass filters and QC.
+Note: No phenotypes present.
+--make-bed to VCF_M5_N7_80pc.bed + VCF_M5_N7_80pc.bim + VCF_M5_N7_80pc.fam ...
+done.
+
+End time: Fri Oct  6 12:41:31 2023

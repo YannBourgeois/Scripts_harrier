@@ -1,7 +1,7 @@
 #### You will find in this repository job arrays (for SLURM schedulers) to run the stacks pipeline for multiple values of N and M
 ####You should run the scripts in this order: cutadapt.sh > ustacks_array.sh > stacks_last_steps.sh
 ####This README file lists the intermediate commands that you need to run to make sure the scripts will run properly. Read it carefully!
-#### For more information about slack and its options, please consult https://catchenlab.life.illinois.edu/stacks/manual/
+#### For more information about stacks and its options, please consult https://catchenlab.life.illinois.edu/stacks/manual/
 #### It should be possible to create a snakemake pipeline to run all these scripts in an automated way, but at the moment you need to submit the job arrays corresponding to the different steps yourself.
 
 #### We first need to generate the configuration files that will list our samples, the value of mismatches M that we want to use to group reads into a contig for each individual
