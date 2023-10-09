@@ -1,5 +1,5 @@
 ---
-title: "Scripts_harrier"
+title: "Scripts for population genetics analyses of the Réunion harrier"
 author: "YBourgeois"
 date: "2023-10-05"
 output: html_document
@@ -8,9 +8,14 @@ output: html_document
 ## Plotting DAPC results
 
 ```{r dapc1, include=TRUE}
+#| warning: false
+#| label: dapc1
+#| error: false
 
-setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/")
-###Edit the PATH before starting anything.
+PATH="~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/"
+##Edit this PATH variable so it points to the Github repository
+
+setwd(paste(PATH,"Scripts_harrier/Landscape_genetics_scripts/",sep=""))
 
 
 library(adegenet)
@@ -18,7 +23,7 @@ a<-read.PLINK("DAPC.raw", map.file = "DAPC.map", n.cores = 1)
 
 ###Identifying most likely number of clusters
 #grp <- find.clusters(a,max.n.clust=5,n.pca=100)
-###2 clusters. You can test this yourself by uncommenting.
+### 2 clusters. You can test this yourself by uncommenting.
 
 grp2 <- find.clusters(a,n.clust=2,n.pca=100)
 
@@ -33,10 +38,12 @@ scatter(dapc2, col=myCol,scree.da=FALSE, bg="white", pch=20, cell=0, cstar=0, so
 
 
 write.table(dapc2$posterior,file="DAPC_2_clusters_final.txt",sep="\t",quote=F,col.names=F)
+
 ```
 
 ```{r dapc2, include=TRUE}
-
+#| warning: false
+#| error: false
 library(tess3r)
 library(maps)
 library(ggplot2)
@@ -75,7 +82,8 @@ pl +
 ## Plotting ADMIXTURE results
 
 ```{r admix, include=TRUE}
-
+#| warning: false
+#| error: false
 
 library(tess3r)
 library(maps)
@@ -110,11 +118,6 @@ pl +
 
 
 
-ggplot(ADMIX, aes(fill=condition, y=value, x=specie)) + 
-    geom_bar(position="fill", stat="identity")
-
-
-
  
 ```
 
@@ -123,7 +126,8 @@ ggplot(ADMIX, aes(fill=condition, y=value, x=specie)) +
 This one is a sanity check to confirm that what we observe is not obviously related to sex or to the age structure of individuals.
 
 ```{r check, include=TRUE}
-
+#| warning: false
+#| error: false
 table=read.table("Info_samples_Sex_Age.txt",h=T)
 pl <- ggtess3Q(q.matrix, coords, map.polygon =  reu_obj) 
 pl + geom_path(data =  reu_obj, aes(x = long, y = lat)) + xlim(55,56) + 
@@ -151,9 +155,9 @@ pl + geom_path(data =  reu_obj, aes(x = long, y = lat)) + xlim(55,56) +
 
 ## Estimate various F-statistics, Principal Component Analysis
 
-The first part of the script is, admittedly, a "bricolage" aiming at merging DAPC results with
-
 ```{r Fstats, include=TRUE}
+#| warning: false
+#| error: false
 
 library(vcfR)
 library(poppr)
@@ -178,7 +182,8 @@ pop.data$pop<-ifelse(pop.data$Cluster_1<0.6 & pop.data$Cluster_1>0.4,"admixed",p
 We can also use these R packages to perform a Principal Component Analysis and check that it matches with DAPC/ADMIXTURE
 
 ```{r PCA, include=TRUE}
-
+#| warning: false
+#| error: false
 pca.rubi <- vcfR2genlight(rubi.VCF)
 ploidy(pca.rubi) <- 2
 
@@ -191,10 +196,9 @@ rubi.pca.scores <- as.data.frame(rubi.pca$scores)
 rubi.pca.scores$ind=rownames(rubi.pca.scores)
 rubi.pca.scores2<-merge(rubi.pca.scores,pop.data,by="ind")
 rubi.pca.scores=rubi.pca.scores2
-##Reorder pop.data so the order of individuals match. with dat Then import again
 
 
-cols <- brewer.pal(n = nPop(gl.rubi), name = "Dark2")
+cols <- brewer.pal(n =3, name = "Dark2")
 
 library(ggplot2)
 set.seed(9)
@@ -210,7 +214,8 @@ p+labs(y= "PC2, 5.58% variance explained",x = "PC1, 8.15% variance explained")+t
 ```
 
 ```{r Fstats2, include=TRUE}
-
+#| warning: false
+#| error: false
 ## The following websites may be useful:
 ##https://cran.r-project.org/web/packages/hierfstat/vignettes/hierfstat.html
 #https://www2.unil.ch/popgen/teaching/WISG17/import.pdf #To import
@@ -263,20 +268,26 @@ boot.ppfis(dat)
 To install the EEMS library, the following command can be used (Linux distribution)
 
 ```{r eems, include=FALSE}
+#| warning: false
+#| error: false
+setwd(paste(PATH,"Scripts_harrier/Landscape_genetics_scripts/EEMS",sep=""))
 
-setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/EEMS")
+
 ###Edit the PATH before starting anything.
-install.packages(c("Rcpp", "RcppEigen", "raster", "rgeos", "sp"))
+#install.packages(c("Rcpp", "RcppEigen", "raster", "rgeos", "sp"))
 ##Sanity check
-if (dir.exists("rEEMSplots")) {
- install.packages("rEEMSplots", repos = NULL, type = "source")
- } else {
- stop("Move to the directory that contains the rEEMSplots source to install the package.")
- }
+#if (dir.exists("rEEMSplots")) {
+# install.packages("rEEMSplots", repos = NULL, type = "source")
+# } else {
+# stop("Move to the directory that contains the rEEMSplots source to install the package.")
+# }
 ```
 
 ```{r eems2, include=FALSE}
-setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/EEMS")
+#| warning: false
+#| error: false
+setwd(paste(PATH,"Scripts_harrier/Landscape_genetics_scripts/EEMS",sep=""))
+
 library("rEEMSplots")
 library("rgdal") ## Defines functions to transform spatial elements
 library("rworldmap") ## Defines world 
@@ -295,12 +306,196 @@ longlat = FALSE, m.plot.xy = { plot(reu_obj, col = NA, add = TRUE); points(coord
 
 ## Radish: estimate landscape resistivity
 
-You can also embed plots, for example:
+The first step consists in running a Principal Components Analysis on climatic data. Unfortunately, raw Météo France data (in ascii format, UTM coordinates, zone 40) are not supposed to be shared for free and are not provided here (next version of the manuscript should show results for Bioclim data to ensure full reproducibility). Instead we will use the bioclimatic data (https://www.worldclim.org/data/bioclim.html) that we derived from these data. Results are very similar with the published ones.
 
-```{r radish, echo=FALSE}
-setwd("~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/EEMS")
+```{r spatial PCA}
+#| warning: false
+#| error: false
+setwd(paste(PATH,"Scripts_harrier/Landscape_genetics_scripts/Bioclim",sep=""))
+
+
+library(RStoolbox)
+library(radish)
+library(rgdal)
+library(raster) 
+library(RStoolbox)
+
+####
+
+function_rebuild = function(map){
+common=raster("bio1.grd")
+raster(vals=values(crop(raster(map),extent(common))),ext=extent(common),crs=crs(common),nrows=dim(common)[1],ncols=dim(common)[2])
+}
+
+
+files=list.files("./", pattern = "grd")
+r <- lapply(files, function_rebuild) 
+x <- do.call("stack",r) 
+pca1 <- rasterPCA(scale(x))
+
+coordinates=DAPC
+cord.dec = SpatialPoints(cbind(coordinates$LON,coordinates$LAT),proj4string=CRS("+proj=longlat"))
+coord_utm=spTransform(cord.dec, CRS("+init=epsg:32610 + south +zone=40"))
+coordinates$LON=coord_utm@coords[,1]/100
+coordinates$LAT=coord_utm@coords[,2]/100
+
+  
+  
+ ggplot() +
+  geom_raster(data =pca1$map, aes(x = x, y = y, fill = PC1)) +
+  coord_equal() + 
+  geom_point(data =coordinates,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =coordinates, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="red", mid="white",high="green", space ="Lab" ) + scale_fill_gradient2(midpoint=0.5, low="red", mid="white",high="darkblue",na.value=adjustcolor("white",alpha.f=0.2), space ="Lab" )
+
+
+
+ ggplot() +
+  geom_raster(data =pca1$map, aes(x = x, y = y, fill = PC2)) +
+  coord_equal() + 
+  geom_point(data =coordinates,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =coordinates, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="red", mid="white",high="green", space ="Lab" ) + scale_fill_gradient2(midpoint=0.5, low="red", mid="white",high="darkblue",na.value=adjustcolor("white",alpha.f=0.2), space ="Lab" )
+
+ 
+writeRaster(pca1$map$PC1, filename="~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/PC_grids_climate/PC1.grd", datatype='INT4S', overwrite=TRUE)
+writeRaster(pca1$map$PC2, filename="~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/PC_grids_climate/PC2.grd", datatype='INT4S', overwrite=TRUE)
+
+```
+
+We can now run the radish analysis. We need the maps with the PC projections, the coordinates (UTM), and a matrix of genetic distances.
+
+```{r radish2}
+#| warning: false
+#| error: false
+setwd(paste(PATH,"Scripts_harrier/Landscape_genetics_scripts/",sep=""))
+
+files=c("PC_grids_climate/PC1.grd","PC_grids_climate/PC2.grd")
+tmp <- lapply(files, raster) 
+environment <- do.call("stack",tmp) 
+
+genetic_distances=as.matrix(bitwise.dist(pca.rubi))
+
+##Reorder coordinates so the order of individuals matches with the genetic distance matrix
+coordinates=coordinates[match(rownames(genetic_distances), coordinates$ind), ]  
+all.equal(rownames(genetic_distances),coordinates$ind) ##Should be TRUE
+
+###We can plot the grid file we produced before
+ ggplot() +
+  geom_raster(data =environment, aes(x = x, y = y, fill = PC1)) +
+  coord_equal() + 
+  geom_point(data =coordinates,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =coordinates, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="red", mid="white",high="green", space ="Lab" ) + scale_fill_gradient2(midpoint=0.5, low="red", mid="white",high="darkblue",na.value=adjustcolor("white",alpha.f=0.2), space ="Lab" )
+
+
+spatial_coord=SpatialPoints(coordinates[,c(3,2)],proj4string=CRS("+init=epsg:32610 + south +zone=40"))
+ 
+surface <- conductance_surface(environment,spatial_coord, directions = 8)
+```
+
+We can then fit the model.
+
+```{r}
+#| warning: false
+#| error: false
+####Radish MLPE model
+fit_mlpe <- radish(genetic_distances ~ PC1 + PC2, surface, 
+                   radish::loglinear_conductance, radish::mlpe)
+summary(fit_mlpe)
+```
+
+```{r}
+#| warning: false
+#| error: false
+# vizualisation:
+plot(fitted(fit_mlpe, "distance"), genetic_distances, pch = 19,
+     xlab = "Optimized resistance distance", ylab = "Genetic distance")
+
+# visualise estimated conductance surface and asymptotic confidence intervals
+fitted_conductance <- conductance(surface, fit_mlpe, quantile = 0.95)
+
+ ggplot() +
+  geom_raster(data =fitted_conductance, aes(x = x, y = y, fill = est)) +
+  coord_equal() + 
+  geom_point(data =coordinates,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =coordinates, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="red", mid="white",high="green", space ="Lab" ) + scale_fill_gradient2(midpoint=1.25, low="darkblue", mid="white",high="red",na.value=adjustcolor("white",alpha.f=0.2), space ="Lab" )
+
+```
+
+We can then run a few model comparisons
+
+```{r}
+#| warning: false
+#| error: false
+# model selection:
+# fit a reduced model without "PC2" covariate, and compare to 
+# full model via a likelihood ratio test
+fit_mlpe_reduced <- radish(genetic_distances ~ PC1, surface, 
+                           radish::loglinear_conductance, radish::mlpe)
+anova(fit_mlpe, fit_mlpe_reduced)
+
+# test against null model of IBD
+fit_mlpe_ibd <- radish(genetic_distances ~ 1, surface, 
+                       radish::loglinear_conductance, radish::mlpe)
+anova(fit_mlpe, fit_mlpe_ibd)
 
 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Now the same scripts, for the Generalized Wishart model
+
+```{r radish}
+#| warning: false
+#| error: false
+####Generalized Wishart model
+fit_wishart <- radish(genetic_distances ~ PC1 + PC2, surface,nu=7955, 
+                   radish::loglinear_conductance, radish::generalized_wishart)
+summary(fit_wishart)
+```
+
+```{r}
+#| warning: false
+#| error: false
+# vizualisation:
+plot(fitted(fit_wishart, "distance"), genetic_distances, pch = 19,
+     xlab = "Optimized resistance distance", ylab = "Genetic distance")
+
+# visualise estimated conductance surface and asymptotic confidence intervals
+fitted_conductance <- conductance(surface, fit_wishart, quantile = 0.95)
+
+
+ggplot() +
+  geom_raster(data =fitted_conductance, aes(x = x, y = y, fill = est)) +
+  coord_equal() + 
+  geom_point(data =coordinates,aes(x = LON, y = LAT), size = 4,color="black") + 
+  geom_point(data =coordinates, aes(x = LON, y = LAT,color=Cluster_1), size = 2) + 
+  xlab("Longitude") +
+  ylab("Latitude") + 
+  theme_bw() + scale_color_gradient2(midpoint=0.5, low="red", mid="white",high="green", space ="Lab" ) + scale_fill_gradient2(midpoint=1.5, low="darkblue", mid="white",high="red",na.value=adjustcolor("white",alpha.f=0.2), space ="Lab" )
+
+```
+
+We can then run a few model comparisons
+
+```{r}
+#| warning: false
+#| error: false
+fit_wishart_reduced <- radish(genetic_distances ~ PC1, surface,nu=7955, 
+                           radish::loglinear_conductance, radish::generalized_wishart)
+anova(fit_wishart, fit_wishart_reduced)
+
+# test against null model of IBD
+fit_wishart_ibd <- radish(genetic_distances ~ 1, surface,nu=7955, 
+                       radish::loglinear_conductance, radish::generalized_wishart)
+anova(fit_wishart, fit_wishart_ibd)
+```

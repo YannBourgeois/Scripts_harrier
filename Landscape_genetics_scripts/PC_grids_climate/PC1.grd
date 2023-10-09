@@ -1,0 +1,27 @@
+[general]
+creator=R package 'raster'
+created=2023-10-09 18:15:58
+[data]
+datatype=INT4S
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=-7
+maxvalue=6
+nodatavalue=-2147483647
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=PC1
+[georeference]
+nrows=463
+ncols=514
+xmin=3129.33723196881
+ymin=76326.3372319688
+xmax=3810.66276803119
+ymax=76940.0604288499
+projection=
+wkt=

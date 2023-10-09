@@ -1,0 +1,66 @@
+[General]
+Creator=DIVA-GIS
+Created=20120619
+Title=BIO10
+
+[GeoReference]
+Projection=
+Datum=
+Mapunits=
+Columns=514
+Rows=463
+MinX=3129.33723196881
+MaxX=3810.66276803119
+MinY=76326.3372319688
+MaxY=76940.0604288499
+ResolutionX=1.32553606237817
+ResolutionY=1.32553606237818
+
+[Data]
+DataType=FLT4S
+MinValue=1.38333332538605
+MaxValue=2.88333344459534
+NoDataValue=-3.4E38
+Transparent=0
+Units=
+
+[Application]
+Opt0=Imported ASCII data from: E:\Mes documents\Work\Publications\In prep papers\Niches Leucocytozoon\V1-V2\Analyses\Cartes_bioclim\BIO10.asc
+
+[ContLegend]
+Count=2
+Color1=16711680
+Value1=1.38333332538605
+Label1=
+Color2=255
+Value2=2.88333344459534
+Label2=
+
+[Legend]
+Count=5
+Color1=32768
+Min1=1
+Max1=1.683
+Label1=1.000 - 1.683
+Color2=65280
+Min2=1.683
+Max2=1.983
+Label2=1.683 - 1.983
+Color3=65535
+Min3=1.983
+Max3=2.283
+Label3=1.983 - 2.283
+Color4=38655
+Min4=2.283
+Max4=2.583
+Label4=2.283 - 2.583
+Color5=255
+Min5=2.583
+Max5=3
+Label5=2.583 - 3.000
+Transparent=0
+NoDataColor=0
+NoDataLabel=No Data
+isContinuous=0
+SpacedByColor=0
+

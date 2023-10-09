@@ -9,7 +9,7 @@
 #SBATCH --error=stacks_job.%J.err
 ## ***Commands starts here***
 
-####This script will run ustacks with M values of 1, 3, 5 and 7 (check the config file) for each of the 61 samples, and place the output in folders named stacks_M1, stacks_M3, etc.
+####This script will run the last steps for the stacks pipeline. The sstacks part can also be run on each sample independently using an array (see the ustacks script)
 config=list_combinations_folders_cstacks.txt
 
 PATH_TO_SAMPLES=/mnt/lustre/yb24/Harrier_analyses/RE_processed/Second_reads_trimmed/

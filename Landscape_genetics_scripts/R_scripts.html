@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="YBourgeois">
+<meta name="dcterms.date" content="2023-10-05">
+
+<title>Scripts for population genetics analyses of the Réunion harrier</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="R_scripts_files/libs/clipboard/clipboard.min.js"></script>
+<script src="R_scripts_files/libs/quarto-html/quarto.js"></script>
+<script src="R_scripts_files/libs/quarto-html/popper.min.js"></script>
+<script src="R_scripts_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="R_scripts_files/libs/quarto-html/anchor.min.js"></script>
+<link href="R_scripts_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="R_scripts_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="R_scripts_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="R_scripts_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="R_scripts_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Scripts for population genetics analyses of the Réunion harrier</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>YBourgeois </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 5, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="plotting-dapc-results" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-dapc-results">Plotting DAPC results</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>PATH<span class="ot">=</span><span class="st">"~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">##Edit this PATH variable so it points to the Github repository</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">paste</span>(PATH,<span class="st">"Scripts_harrier/Landscape_genetics_scripts/"</span>,<span class="at">sep=</span><span class="st">""</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(adegenet)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>a<span class="ot">&lt;-</span><span class="fu">read.PLINK</span>(<span class="st">"DAPC.raw"</span>, <span class="at">map.file =</span> <span class="st">"DAPC.map"</span>, <span class="at">n.cores =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Reading PLINK raw format into a genlight object... 
+
+
+ Reading loci information... 
+
+ Reading and converting genotypes... 
+.
+ Building final object... 
+
+...done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">###Identifying most likely number of clusters</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#grp &lt;- find.clusters(a,max.n.clust=5,n.pca=100)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="do">### 2 clusters. You can test this yourself by uncommenting.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>grp2 <span class="ot">&lt;-</span> <span class="fu">find.clusters</span>(a,<span class="at">n.clust=</span><span class="dv">2</span>,<span class="at">n.pca=</span><span class="dv">100</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="do">###How many axes to keep</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>dapctest <span class="ot">&lt;-</span> <span class="fu">dapc</span>(a, grp2<span class="sc">$</span>grp,<span class="at">n.da=</span><span class="dv">2</span>, <span class="at">n.pca=</span><span class="dv">100</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>temp1 <span class="ot">&lt;-</span> <span class="fu">optim.a.score</span>(dapctest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/dapc1-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Keep 1 PC axes (same for datasets with and without outgroups)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dapc2 <span class="ot">&lt;-</span> <span class="fu">dapc</span>(a,grp2<span class="sc">$</span>grp,<span class="at">n.da=</span><span class="dv">2</span>, <span class="at">n.pca=</span><span class="dv">1</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>myCol <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"green"</span>,<span class="st">"red"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(dapc2, <span class="at">col=</span>myCol,<span class="at">scree.da=</span><span class="cn">FALSE</span>, <span class="at">bg=</span><span class="st">"white"</span>, <span class="at">pch=</span><span class="dv">20</span>, <span class="at">cell=</span><span class="dv">0</span>, <span class="at">cstar=</span><span class="dv">0</span>, <span class="at">solid=</span>.<span class="dv">4</span>,<span class="at">cex=</span><span class="dv">3</span>,<span class="at">clab=</span><span class="dv">0</span>, <span class="at">leg=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/dapc1-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dapc2<span class="sc">$</span>posterior,<span class="at">file=</span><span class="st">"DAPC_2_clusters_final.txt"</span>,<span class="at">sep=</span><span class="st">"</span><span class="sc">\t</span><span class="st">"</span>,<span class="at">quote=</span>F,<span class="at">col.names=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tess3r)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(maps)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rworldmap)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rworldxtra)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rgdal"</span>) <span class="do">## Defines functions to transform spatial elements</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="do">###map.polygon &lt;- getMap(resolution = "high")</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>projection_none <span class="ot">&lt;-</span> <span class="st">"+proj=longlat +datum=WGS84"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>projection_mercator <span class="ot">&lt;-</span> <span class="st">"+proj=merc +datum=WGS84"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"REU_adm0.RData"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>reu_obj<span class="ot">&lt;-</span>gadm ; <span class="fu">rm</span>(gadm)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>coords<span class="ot">&lt;-</span><span class="fu">read.table</span>(<span class="st">"Info_samples_Coordinates_position_plink_files.txt"</span>,<span class="at">h=</span>T)[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">5</span>)]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#File containing info about the name of the individual in the VCF, the coordinates, and the relative order in the ped files from PLINK</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span><span class="fu">cbind</span>(<span class="fu">as.data.frame</span>(<span class="fu">rownames</span>(dapc2<span class="sc">$</span>posterior)),<span class="fu">as.data.frame</span>(dapc2<span class="sc">$</span>posterior))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tmp)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"ind"</span>,<span class="st">"Cluster_1"</span>,<span class="st">"Cluster_2"</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>DAPC<span class="ot">&lt;-</span><span class="fu">merge</span>(coords,tmp,<span class="at">by=</span><span class="st">"ind"</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>q.matrix <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(DAPC[,<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">4</span>)]) </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>coords<span class="ot">&lt;-</span>DAPC[,<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>)]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">ggtess3Q</span>(q.matrix, coords, <span class="at">map.polygon =</span>  reu_obj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Warning: 
+Grid searches over lambda (nugget and sill variances) with  minima at the endpoints: 
+  (REML) Restricted maximum likelihood 
+   minimum at  right endpoint  lambda  =  520.3857 (eff. df= 3.00098 )
+Warning: 
+Grid searches over lambda (nugget and sill variances) with  minima at the endpoints: 
+  (REML) Restricted maximum likelihood 
+   minimum at  right endpoint  lambda  =  520.3857 (eff. df= 3.00098 )</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pl <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span>  reu_obj, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group)) <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="dv">55</span>,<span class="dv">56</span>) <span class="sc">+</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">21.5</span>, <span class="sc">-</span><span class="fl">20.75</span>) <span class="sc">+</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>DAPC,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>DAPC, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/dapc2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="plotting-admixture-results" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-admixture-results">Plotting ADMIXTURE results</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tess3r)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(maps)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rworldmap)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rworldxtra)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rgdal"</span>) <span class="do">## Defines functions to transform spatial elements</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="do">###map.polygon &lt;- getMap(resolution = "high")</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>projection_none <span class="ot">&lt;-</span> <span class="st">"+proj=longlat +datum=WGS84"</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>projection_mercator <span class="ot">&lt;-</span> <span class="st">"+proj=merc +datum=WGS84"</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"REU_adm0.RData"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>reu_obj<span class="ot">&lt;-</span>gadm ; <span class="fu">rm</span>(gadm)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>admix<span class="ot">&lt;-</span><span class="fu">read.table</span>(<span class="st">"ADMIXTURE_K2.txt"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(admix)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"ind"</span>,<span class="st">"Cluster_1"</span>,<span class="st">"Cluster_2"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>coords<span class="ot">&lt;-</span><span class="fu">read.table</span>(<span class="st">"Info_samples_Coordinates_position_plink_files.txt"</span>,<span class="at">h=</span>T)[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">5</span>)]</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>ADMIX<span class="ot">&lt;-</span><span class="fu">merge</span>(coords,admix,<span class="at">by=</span><span class="st">"ind"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>q.matrix <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(ADMIX[,<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>])</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>coords<span class="ot">&lt;-</span>ADMIX[,<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>)]</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">ggtess3Q</span>(q.matrix, coords, <span class="at">map.polygon =</span>  reu_obj)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>pl <span class="sc">+</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span>  reu_obj, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group)) <span class="sc">+</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="dv">55</span>,<span class="dv">56</span>) <span class="sc">+</span> </span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">21.5</span>, <span class="sc">-</span><span class="fl">20.75</span>) <span class="sc">+</span> </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>ADMIX,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>ADMIX, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"green"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>, <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/admix-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="check-spatial-distribution-of-sex-age-categories" class="level2">
+<h2 class="anchored" data-anchor-id="check-spatial-distribution-of-sex-age-categories">Check spatial distribution of sex, age categories</h2>
+<p>This one is a sanity check to confirm that what we observe is not obviously related to sex or to the age structure of individuals.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>table<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">"Info_samples_Sex_Age.txt"</span>,<span class="at">h=</span>T)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">ggtess3Q</span>(q.matrix, coords, <span class="at">map.polygon =</span>  reu_obj) </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>pl <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="at">data =</span>  reu_obj, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat)) <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">55</span>,<span class="dv">56</span>) <span class="sc">+</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">21.5</span>, <span class="sc">-</span><span class="fl">20.75</span>) <span class="sc">+</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>table,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> table, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT, <span class="at">color=</span>SEXE), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/check-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pl <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="at">data =</span>  reu_obj, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat)) <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">55</span>,<span class="dv">56</span>) <span class="sc">+</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">21.5</span>, <span class="sc">-</span><span class="fl">20.75</span>) <span class="sc">+</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>table,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> table, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT, <span class="at">color=</span>AGE), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/check-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="estimate-various-f-statistics-principal-component-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="estimate-various-f-statistics-principal-component-analysis">Estimate various F-statistics, Principal Component Analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vcfR)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(poppr)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>rubi.VCF <span class="ot">&lt;-</span> <span class="fu">read.vcfR</span>(<span class="st">"VCF_M5_N7_80pc.vcf"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Scanning file to determine attributes.
+File attributes:
+  meta lines: 14
+  header_line: 15
+  variant count: 7955
+  column count: 69
+
+Meta line 14 read in.
+All meta lines processed.
+gt matrix initialized.
+Character matrix gt created.
+  Character matrix gt rows: 7955
+  Character matrix gt cols: 69
+  skip: 0
+  nrows: 7955
+  row_num: 0
+
+Processed variant 1000
+Processed variant 2000
+Processed variant 3000
+Processed variant 4000
+Processed variant 5000
+Processed variant 6000
+Processed variant 7000
+Processed variant: 7955
+All variants processed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pop.data <span class="ot">&lt;-</span> DAPC</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>ind_vcf<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">colnames</span>(rubi.VCF<span class="sc">@</span>gt)[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ind_vcf)<span class="ot">&lt;-</span><span class="st">"ind"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>pop.data2<span class="ot">&lt;-</span><span class="fu">merge</span>(ind_vcf,pop.data,<span class="at">by=</span><span class="st">"ind"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>pop.data<span class="ot">&lt;-</span>pop.data2</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(rubi.VCF<span class="sc">@</span>gt)[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">==</span> pop.data<span class="sc">$</span>ind) <span class="do">###OK</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pop.data<span class="sc">$</span>pop<span class="ot">&lt;-</span><span class="fu">ifelse</span>(pop.data<span class="sc">$</span>Cluster_1<span class="sc">&lt;</span><span class="fl">0.4</span>,<span class="st">"Cluster_2"</span>,<span class="st">"Cluster_1"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>pop.data<span class="sc">$</span>pop<span class="ot">&lt;-</span><span class="fu">ifelse</span>(pop.data<span class="sc">$</span>Cluster_1<span class="sc">&lt;</span><span class="fl">0.6</span> <span class="sc">&amp;</span> pop.data<span class="sc">$</span>Cluster_1<span class="sc">&gt;</span><span class="fl">0.4</span>,<span class="st">"admixed"</span>,pop.data<span class="sc">$</span>pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can also use these R packages to perform a Principal Component Analysis and check that it matches with DAPC/ADMIXTURE</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pca.rubi <span class="ot">&lt;-</span> <span class="fu">vcfR2genlight</span>(rubi.VCF)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ploidy</span>(pca.rubi) <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>rubi.pca <span class="ot">&lt;-</span> <span class="fu">glPca</span>(pca.rubi,<span class="at">nf=</span><span class="dv">5</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="dv">100</span><span class="sc">*</span>rubi.pca<span class="sc">$</span>eig<span class="sc">/</span><span class="fu">sum</span>(rubi.pca<span class="sc">$</span>eig), <span class="at">col =</span> <span class="fu">heat.colors</span>(<span class="dv">50</span>), <span class="at">main=</span><span class="st">"PCA Eigenvalues"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">ylab=</span><span class="st">"Percent of variance</span><span class="sc">\n</span><span class="st">explained"</span>, <span class="at">line =</span> <span class="dv">2</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">xlab=</span><span class="st">"Eigenvalues"</span>, <span class="at">line =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/PCA-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rubi.pca.scores <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(rubi.pca<span class="sc">$</span>scores)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>rubi.pca.scores<span class="sc">$</span>ind<span class="ot">=</span><span class="fu">rownames</span>(rubi.pca.scores)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>rubi.pca.scores2<span class="ot">&lt;-</span><span class="fu">merge</span>(rubi.pca.scores,pop.data,<span class="at">by=</span><span class="st">"ind"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>rubi.pca.scores<span class="ot">=</span>rubi.pca.scores2</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="at">n =</span><span class="dv">3</span>, <span class="at">name =</span> <span class="st">"Dark2"</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(rubi.pca.scores, <span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">colour=</span>pop)) </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">4</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.95</span>, <span class="at">size =</span> <span class="dv">1</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cols) </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>) </span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>p<span class="sc">+</span><span class="fu">labs</span>(<span class="at">y=</span> <span class="st">"PC2, 5.58% variance explained"</span>,<span class="at">x =</span> <span class="st">"PC1, 8.15% variance explained"</span>)<span class="sc">+</span><span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/PCA-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## The following websites may be useful:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="do">##https://cran.r-project.org/web/packages/hierfstat/vignettes/hierfstat.html</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#https://www2.unil.ch/popgen/teaching/WISG17/import.pdf #To import</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pegas)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hierfstat)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>fn<span class="ot">&lt;-</span><span class="st">"VCF_M5_N7_80pc.vcf"</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>x.l<span class="ot">&lt;-</span><span class="fu">VCFloci</span>(fn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Scanning file VCF_M5_N7_80pc.vcf 
+
+ 15.71299 / 15.71299 Mb
+ 15.71299 / 15.71299 Mb
+Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>base<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"A"</span>,<span class="st">"T"</span>,<span class="st">"G"</span>,<span class="st">"C"</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>snps<span class="ot">&lt;-</span><span class="fu">which</span>(x.l<span class="sc">$</span>REF <span class="sc">%in%</span> base <span class="sc">&amp;</span> x.l<span class="sc">$</span>ALT <span class="sc">%in%</span> base)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>x<span class="ot">&lt;-</span><span class="fu">read.vcf</span>(fn,<span class="at">which.loci=</span>snps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Reading 100 / 7955 loci
+Reading 200 / 7955 loci
+Reading 300 / 7955 loci
+Reading 400 / 7955 loci
+Reading 500 / 7955 loci
+Reading 600 / 7955 loci
+Reading 700 / 7955 loci
+Reading 800 / 7955 loci
+Reading 900 / 7955 loci
+Reading 1000 / 7955 loci
+Reading 1100 / 7955 loci
+Reading 1200 / 7955 loci
+Reading 1300 / 7955 loci
+Reading 1400 / 7955 loci
+Reading 1500 / 7955 loci
+Reading 1600 / 7955 loci
+Reading 1700 / 7955 loci
+Reading 1800 / 7955 loci
+Reading 1900 / 7955 loci
+Reading 2000 / 7955 loci
+Reading 2100 / 7955 loci
+Reading 2200 / 7955 loci
+Reading 2300 / 7955 loci
+Reading 2400 / 7955 loci
+Reading 2500 / 7955 loci
+Reading 2600 / 7955 loci
+Reading 2700 / 7955 loci
+Reading 2800 / 7955 loci
+Reading 2900 / 7955 loci
+Reading 3000 / 7955 loci
+Reading 3100 / 7955 loci
+Reading 3200 / 7955 loci
+Reading 3300 / 7955 loci
+Reading 3400 / 7955 loci
+Reading 3500 / 7955 loci
+Reading 3600 / 7955 loci
+Reading 3700 / 7955 loci
+Reading 3800 / 7955 loci
+Reading 3900 / 7955 loci
+Reading 4000 / 7955 loci
+Reading 4100 / 7955 loci
+Reading 4200 / 7955 loci
+Reading 4300 / 7955 loci
+Reading 4400 / 7955 loci
+Reading 4500 / 7955 loci
+Reading 4600 / 7955 loci
+Reading 4700 / 7955 loci
+Reading 4800 / 7955 loci
+Reading 4900 / 7955 loci
+Reading 5000 / 7955 loci
+Reading 5100 / 7955 loci
+Reading 5200 / 7955 loci
+Reading 5300 / 7955 loci
+Reading 5400 / 7955 loci
+Reading 5500 / 7955 loci
+Reading 5600 / 7955 loci
+Reading 5700 / 7955 loci
+Reading 5800 / 7955 loci
+Reading 5900 / 7955 loci
+Reading 6000 / 7955 loci
+Reading 6100 / 7955 loci
+Reading 6200 / 7955 loci
+Reading 6300 / 7955 loci
+Reading 6400 / 7955 loci
+Reading 6500 / 7955 loci
+Reading 6600 / 7955 loci
+Reading 6700 / 7955 loci
+Reading 6800 / 7955 loci
+Reading 6900 / 7955 loci
+Reading 7000 / 7955 loci
+Reading 7100 / 7955 loci
+Reading 7200 / 7955 loci
+Reading 7300 / 7955 loci
+Reading 7400 / 7955 loci
+Reading 7500 / 7955 loci
+Reading 7600 / 7955 loci
+Reading 7700 / 7955 loci
+Reading 7800 / 7955 loci
+Reading 7900 / 7955 loci
+Reading 7955 / 7955 loci.
+Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span><span class="fu">genind2hierfstat</span>(<span class="fu">loci2genind</span>(x),<span class="at">pop=</span>pop.data<span class="sc">$</span>pop)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="do">##Reorder pop.data so the order of individuals match. with dat Then import again</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>pop.data<span class="ot">=</span>pop.data[<span class="fu">match</span>(<span class="fu">rownames</span>(dat), pop.data<span class="sc">$</span>ind), ]  </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span><span class="fu">genind2hierfstat</span>(<span class="fu">loci2genind</span>(x),<span class="at">pop=</span>pop.data<span class="sc">$</span>pop)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">rownames</span>(dat),<span class="fu">as.character</span>(pop.data<span class="sc">$</span>ind)) <span class="do">##Should be TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Useful to inspect individual loci statistics</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>results_Fstats<span class="ot">&lt;-</span><span class="fu">basic.stats</span>(dat)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="do">###For example, to get individual Fis:</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>FIS<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(results_Fstats<span class="sc">$</span>Fis) </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>W_Cockerham<span class="ot">&lt;-</span><span class="fu">pairwise.WCfst</span>(dat)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>W_Cockerham</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             admixed  Cluster_1  Cluster_2
+admixed           NA 0.02049046 0.02699966
+Cluster_1 0.02049046         NA 0.07733697
+Cluster_2 0.02699966 0.07733697         NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#             admixed  Cluster_1  Cluster_2</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># admixed           NA 0.02049046 0.02699966</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Cluster_1 0.02049046         NA 0.07733697</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cluster_2 0.02699966 0.07733697         NA</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="do">###bootstraps and dosage needs numeric for pop ids. To edit so we can assign individuals better.</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pop<span class="ot">&lt;-</span><span class="fu">ifelse</span>(dat<span class="sc">$</span>pop<span class="sc">==</span><span class="st">"Cluster_1"</span>,<span class="dv">1</span>,dat<span class="sc">$</span>pop)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pop<span class="ot">&lt;-</span><span class="fu">ifelse</span>(dat<span class="sc">$</span>pop<span class="sc">==</span><span class="st">"Cluster_2"</span>,<span class="dv">2</span>,dat<span class="sc">$</span>pop)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pop<span class="ot">&lt;-</span><span class="fu">ifelse</span>(dat<span class="sc">$</span>pop<span class="sc">==</span><span class="st">"admixed"</span>,<span class="dv">3</span>,dat<span class="sc">$</span>pop)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ppfst</span>(dat,<span class="at">n=</span><span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+       Upper limit above diagonal 
+       Lower limit below diagonal 
+ 
+            1          2          3
+1          NA 0.08202995 0.03199338
+2 0.072749147         NA 0.03861473
+3 0.009314446 0.01534604         NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fis.gt<span class="ot">&lt;-</span><span class="fu">fis.dosage</span>(<span class="fu">fstat2dos</span>(dat[,<span class="sc">-</span><span class="dv">1</span>]),<span class="at">pop=</span>dat[,<span class="dv">1</span>]) </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>fis.gt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1          2          3        All 
+0.04866630 0.12098237        NaN 0.08482434 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ppfis</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$call
+boot.ppfis(dat = dat)
+
+$fis.ci
+      ll     hl
+1 0.0436 0.0591
+2 0.1079 0.1216
+3   -Inf   -Inf</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-eems-results" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-eems-results">Plotting EEMS results</h2>
+<p>To install the EEMS library, the following command can be used (Linux distribution)</p>
+</section>
+<section id="radish-estimate-landscape-resistivity" class="level2">
+<h2 class="anchored" data-anchor-id="radish-estimate-landscape-resistivity">Radish: estimate landscape resistivity</h2>
+<p>The first step consists in running a Principal Components Analysis on climatic data. Unfortunately, raw Météo France data (in ascii format, UTM coordinates, zone 40) are not supposed to be shared for free and are not provided here (next version of the manuscript should show results for Bioclim data to ensure full reproducibility). Instead we will use the bioclimatic data (https://www.worldclim.org/data/bioclim.html) that we derived from these data. Results are very similar with the published ones.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/spatial%20PCA-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/spatial%20PCA-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      coords.x1 coords.x2
+ [1,]  364160.1   7663949
+ [2,]  344391.7   7641825
+ [3,]  339656.4   7686514
+ [4,]  348108.5   7642736
+ [5,]  358128.9   7683059
+ [6,]  352367.1   7655456
+ [7,]  359607.8   7675636
+ [8,]  359382.0   7675528
+ [9,]  355853.1   7685794
+[10,]  365353.5   7668554
+[11,]  359677.7   7685076
+[12,]  345692.0   7688998
+[13,]  355030.1   7686051
+[14,]  331940.7   7648457
+[15,]  360335.9   7676428
+[16,]  363856.1   7664748
+[17,]  339692.0   7652465
+[18,]  339662.5   7652926
+[19,]  359776.0   7685056
+[20,]  343671.1   7645300
+[21,]  359709.1   7685148
+[22,]  343137.2   7639580
+[23,]  359857.0   7678642
+[24,]  363956.4   7664826
+[25,]  325988.5   7660740
+[26,]  320220.6   7667633
+[27,]  360807.1   7675178
+[28,]  339573.5   7645547
+[29,]  359741.9   7685078
+[30,]  358236.3   7641446
+[31,]  363867.0   7664244
+[32,]  369688.1   7637510
+[33,]  355966.2   7678802
+[34,]  360807.1   7675178
+[35,]  351977.7   7639261
+[36,]  359098.7   7677297
+[37,]  350107.0   7637983
+[38,]  363770.9   7664200
+[39,]  344067.4   7649907
+[40,]  331279.9   7648992
+[41,]  361677.7   7675443
+[42,]  359352.4   7677260
+[43,]  343060.6   7681050
+[44,]  346688.6   7671294
+[45,]  340110.2   7689081
+[46,]  361979.9   7676100
+[47,]  328161.1   7677986
+[48,]  359352.4   7677260
+[49,]  376123.7   7653622
+[50,]  361505.4   7674831
+[51,]  360651.3   7666488
+[52,]  359482.2   7675588
+[53,]  359759.7   7685003
+[54,]  325440.0   7661037
+[55,]  324072.8   7666726
+[56,]  342905.5   7660660
+[57,]  359444.4   7677457
+[58,]  324814.8   7655487
+[59,]  360054.0   7678589
+[60,]  317486.0   7672287</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/spatial%20PCA-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/spatial%20PCA-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 463, 514, 237982  (nrow, ncol, ncell)
+resolution : 1.325536, 1.325536  (x, y)
+extent     : 3129.337, 3810.663, 76326.34, 76940.06  (xmin, xmax, ymin, ymax)
+crs        : NA 
+source     : PC1.grd 
+names      : PC1 
+values     : -7, 6  (min, max)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 463, 514, 237982  (nrow, ncol, ncell)
+resolution : 1.325536, 1.325536  (x, y)
+extent     : 3129.337, 3810.663, 76326.34, 76940.06  (xmin, xmax, ymin, ymax)
+crs        : NA 
+source     : PC2.grd 
+names      : PC2 
+values     : -5, 9  (min, max)</code></pre>
+</div>
+</div>
+<p>We can now run the radish analysis. We need the maps with the PC projections, the coordinates (UTM), and a matrix of genetic distances.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/radish2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can then fit the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Radish MLPE model</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>fit_mlpe <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1 <span class="sc">+</span> PC2, surface, </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                   radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Projected Newton-Raphson with Hager-Zhang line search
+[1] f(x) = 7.467e+03   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 2.115e+02   |f''(x)| = -1.756e+06 
+[2] f(x) = 7.489e+03   |f(x)-fold(x)| = 2.251e+01   max|f'(x)| = 1.294e+01   |f''(x)| = -1.225e+06 
+[3] f(x) = 7.490e+03   |f(x)-fold(x)| = 1.420e-01   max|f'(x)| = 7.759e-02   |f''(x)| = -1.324e+06 
+[4] f(x) = 7.490e+03   |f(x)-fold(x)| = 2.934e-06   max|f'(x)| = 5.553e-06   |f''(x)| = -1.323e+06 
+[5] f(x) = 7.490e+03   |f(x)-fold(x)| = 2.456e-11   max|f'(x)| = 1.868e-10   |f''(x)| = -1.323e+06 
+Solution on interior with `max(abs(gradient))` == 1.868489e-10 and `diff(f)` == 2.455636e-11 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Conductance surface with 143049 vertices (60 focal) estimated by maximum likelihood
+Call:   radish(formula = genetic_distances ~ PC1 + PC2, data = surface, 
+    conductance_model = radish::loglinear_conductance, measurement_model = radish::mlpe)
+
+Loglikelihood: 7489.582 (6 degrees freedom)
+AIC: -14967.16 
+
+Number of function calls: 16 
+Number of Newton-Raphson steps: 5 
+Norm of gradient at MLE: 1.977448e-10 
+
+Nuisance parameters:
+  alpha     beta      tau      rho  
+0.07558  0.04700  7.81799  1.63738  
+
+Coefficients:
+    Estimate Std. Error z value Pr(&gt;|z|)    
+PC1  0.07406    0.02604   2.844  0.00446 ** 
+PC2 -0.20411    0.03404  -5.997 2.01e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Coefficients:
+           PC1
+PC2 -0.1961213</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vizualisation:</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(fit_mlpe, <span class="st">"distance"</span>), genetic_distances, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Optimized resistance distance"</span>, <span class="at">ylab =</span> <span class="st">"Genetic distance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualise estimated conductance surface and asymptotic confidence intervals</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>fitted_conductance <span class="ot">&lt;-</span> <span class="fu">conductance</span>(surface, fit_mlpe, <span class="at">quantile =</span> <span class="fl">0.95</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>fitted_conductance, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> est)) <span class="sc">+</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">1.25</span>, <span class="at">low=</span><span class="st">"darkblue"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can then run a few model comparisons</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model selection:</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a reduced model without "PC2" covariate, and compare to </span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># full model via a likelihood ratio test</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>fit_mlpe_reduced <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1, surface, </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>                           radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Projected Newton-Raphson with Hager-Zhang line search
+[1] f(x) = 7.467e+03   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 5.438e+01   |f''(x)| = -1.544e+03 
+[2] f(x) = 7.468e+03   |f(x)-fold(x)| = 9.912e-01   max|f'(x)| = 1.067e+00   |f''(x)| = -1.369e+03 
+[3] f(x) = 7.468e+03   |f(x)-fold(x)| = 4.154e-04   max|f'(x)| = 2.263e-06   |f''(x)| = -1.373e+03 
+[4] f(x) = 7.468e+03   |f(x)-fold(x)| = 3.010e-10   max|f'(x)| = 1.296e-09   |f''(x)| = -1.373e+03 
+Solution on interior with `max(abs(gradient))` == 1.296211e-09 and `diff(f)` == 3.010427e-10 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_mlpe, fit_mlpe_reduced)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+Null: ~ PC1
+Alt: ~ PC1 + PC2
+     logLik Df  ChiSq Df(ChiSq)  Pr(&gt;Chi)    
+Null 7467.9  5                               
+Alt  7489.6  6 43.316         1 4.657e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test against null model of IBD</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>fit_mlpe_ibd <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> <span class="dv">1</span>, surface, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                       radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_mlpe, fit_mlpe_ibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+Null: ~ 1
+Alt: ~ PC1 + PC2
+     logLik Df  ChiSq Df(ChiSq)  Pr(&gt;Chi)    
+Null 7466.9  4                               
+Alt  7489.6  6 45.299         2 1.457e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Now the same scripts, for the Generalized Wishart model</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Projected Newton-Raphson with Hager-Zhang line search
+[1] f(x) = 4.719e+05   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 7.638e+03   |f''(x)| = -2.247e+09 
+[2] f(x) = 4.726e+05   |f(x)-fold(x)| = 7.064e+02   max|f'(x)| = 9.823e+02   |f''(x)| = -1.145e+09 
+[3] f(x) = 4.726e+05   |f(x)-fold(x)| = 2.086e+01   max|f'(x)| = 1.142e+01   |f''(x)| = -1.437e+09 
+[4] f(x) = 4.726e+05   |f(x)-fold(x)| = 1.736e-03   max|f'(x)| = 3.631e-04   |f''(x)| = -1.440e+09 
+[5] f(x) = 4.726e+05   |f(x)-fold(x)| = 1.106e-09   max|f'(x)| = 5.429e-09   |f''(x)| = -1.440e+09 
+Solution on interior with `max(abs(gradient))` == 5.428504e-09 and `diff(f)` == 1.105946e-09 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Conductance surface with 143049 vertices (60 focal) estimated by maximum likelihood
+Call:   radish(formula = genetic_distances ~ PC1 + PC2, data = surface, 
+    conductance_model = radish::loglinear_conductance, measurement_model = radish::generalized_wishart, 
+    nu = 7955)
+
+Loglikelihood: 472589.2 (4 degrees freedom)
+AIC: -945170.4 
+
+Number of function calls: 16 
+Number of Newton-Raphson steps: 5 
+Norm of gradient at MLE: 6.625658e-09 
+
+Nuisance parameters:
+     tau     sigma  
+ 0.05473  -3.22792  
+
+Coefficients:
+     Estimate Std. Error z value Pr(&gt;|z|)    
+PC1  0.172081   0.005462   31.50   &lt;2e-16 ***
+PC2 -0.062828   0.004827  -13.02   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Coefficients:
+           PC1
+PC2 0.02812941</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vizualisation:</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(fit_wishart, <span class="st">"distance"</span>), genetic_distances, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Optimized resistance distance"</span>, <span class="at">ylab =</span> <span class="st">"Genetic distance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualise estimated conductance surface and asymptotic confidence intervals</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>fitted_conductance <span class="ot">&lt;-</span> <span class="fu">conductance</span>(surface, fit_wishart, <span class="at">quantile =</span> <span class="fl">0.95</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>fitted_conductance, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> est)) <span class="sc">+</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">1.5</span>, <span class="at">low=</span><span class="st">"darkblue"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="R_scripts_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can then run a few model comparisons</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>fit_wishart_reduced <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                           radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Projected Newton-Raphson with Hager-Zhang line search
+[1] f(x) = 4.719e+05   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 7.638e+03   |f''(x)| = -4.696e+04 
+[2] f(x) = 4.725e+05   |f(x)-fold(x)| = 6.298e+02   max|f'(x)| = 6.067e+02   |f''(x)| = -3.296e+04 
+[3] f(x) = 4.725e+05   |f(x)-fold(x)| = 5.450e+00   max|f'(x)| = 8.026e-01   |f''(x)| = -3.536e+04 
+[4] f(x) = 4.725e+05   |f(x)-fold(x)| = 9.115e-06   max|f'(x)| = 1.139e-08   |f''(x)| = -3.536e+04 
+Solution on interior with `max(abs(gradient))` == 1.138946e-08 and `diff(f)` == 9.115261e-06 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_wishart, fit_wishart_reduced)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+Null: ~ PC1
+Alt: ~ PC1 + PC2
+     logLik Df  ChiSq Df(ChiSq)  Pr(&gt;Chi)    
+Null 472497  3                               
+Alt  472589  4 184.02         1 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test against null model of IBD</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>fit_wishart_ibd <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> <span class="dv">1</span>, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                       radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_wishart, fit_wishart_ibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+Null: ~ 1
+Alt: ~ PC1 + PC2
+     logLik Df  ChiSq Df(ChiSq)  Pr(&gt;Chi)    
+Null 471862  2                               
+Alt  472589  4 1454.5         2 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

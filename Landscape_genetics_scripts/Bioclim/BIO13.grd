@@ -1,0 +1,66 @@
+[General]
+Creator=DIVA-GIS
+Created=20120619
+Title=BIO13
+
+[GeoReference]
+Projection=
+Datum=
+Mapunits=
+Columns=514
+Rows=463
+MinX=3129.33723196881
+MaxX=3810.66276803119
+MinY=76326.3372319688
+MaxY=76940.0604288499
+ResolutionX=1.32553606237817
+ResolutionY=1.32553606237818
+
+[Data]
+DataType=FLT4S
+MinValue=97
+MaxValue=1704
+NoDataValue=-3.4E38
+Transparent=0
+Units=
+
+[Application]
+Opt0=Imported ASCII data from: E:\Mes documents\Work\Publications\In prep papers\Niches Leucocytozoon\V1-V2\Analyses\Cartes_bioclim\BIO13.asc
+
+[ContLegend]
+Count=2
+Color1=16711680
+Value1=97
+Label1=
+Color2=255
+Value2=1704
+Label2=
+
+[Legend]
+Count=5
+Color1=32768
+Min1=97
+Max1=418
+Label1=97.0 - 418.0
+Color2=65280
+Min2=418
+Max2=740
+Label2=418.0 - 740.0
+Color3=65535
+Min3=740
+Max3=1061
+Label3=740.0 - 1061.0
+Color4=38655
+Min4=1061
+Max4=1383
+Label4=1061.0 - 1383.0
+Color5=255
+Min5=1383
+Max5=1704
+Label5=1383.0 - 1704.0
+Transparent=0
+NoDataColor=0
+NoDataLabel=No Data
+isContinuous=0
+SpacedByColor=0
+
