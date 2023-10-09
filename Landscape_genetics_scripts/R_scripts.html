@@ -507,9 +507,9 @@ Done.</code></pre>
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>W_Cockerham</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             admixed  Cluster_1  Cluster_2
-admixed           NA 0.02049046 0.02699966
-Cluster_1 0.02049046         NA 0.07733697
-Cluster_2 0.02699966 0.07733697         NA</code></pre>
+admixed           NA 0.02699966 0.02049046
+Cluster_1 0.02699966         NA 0.07733697
+Cluster_2 0.02049046 0.07733697         NA</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#             admixed  Cluster_1  Cluster_2</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># admixed           NA 0.02049046 0.02699966</span></span>
@@ -528,16 +528,16 @@ Cluster_2 0.02699966 0.07733697         NA</code></pre>
        Upper limit above diagonal 
        Lower limit below diagonal 
  
-            1          2          3
-1          NA 0.08202995 0.03199338
-2 0.072749147         NA 0.03861473
-3 0.009314446 0.01534604         NA</code></pre>
+           1           2          3
+1         NA 0.082029951 0.03861473
+2 0.07274915          NA 0.03199338
+3 0.01534604 0.009314446         NA</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fis.gt<span class="ot">&lt;-</span><span class="fu">fis.dosage</span>(<span class="fu">fstat2dos</span>(dat[,<span class="sc">-</span><span class="dv">1</span>]),<span class="at">pop=</span>dat[,<span class="dv">1</span>]) </span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>fis.gt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         1          2          3        All 
-0.04866630 0.12098237        NaN 0.08482434 </code></pre>
+0.12098237 0.04866630        NaN 0.08482434 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ppfis</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -546,8 +546,8 @@ boot.ppfis(dat = dat)
 
 $fis.ci
       ll     hl
-1 0.0436 0.0591
-2 0.1079 0.1216
+1 0.1079 0.1216
+2 0.0436 0.0591
 3   -Inf   -Inf</code></pre>
 </div>
 </div>
@@ -560,81 +560,59 @@ $fis.ci
 <h2 class="anchored" data-anchor-id="radish-estimate-landscape-resistivity">Radish: estimate landscape resistivity</h2>
 <p>The first step consists in running a Principal Components Analysis on climatic data. Unfortunately, raw Météo France data (in ascii format, UTM coordinates, zone 40) are not supposed to be shared for free and are not provided here (next version of the manuscript should show results for Bioclim data to ensure full reproducibility). Instead we will use the bioclimatic data (https://www.worldclim.org/data/bioclim.html) that we derived from these data. Results are very similar with the published ones.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">paste</span>(PATH,<span class="st">"Scripts_harrier/Landscape_genetics_scripts/Bioclim"</span>,<span class="at">sep=</span><span class="st">""</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RStoolbox)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(radish)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgdal)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster) </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RStoolbox)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="do">####</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>function_rebuild <span class="ot">=</span> <span class="cf">function</span>(map){</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>common<span class="ot">=</span><span class="fu">raster</span>(<span class="st">"bio1.grd"</span>)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">raster</span>(<span class="at">vals=</span><span class="fu">values</span>(<span class="fu">crop</span>(<span class="fu">raster</span>(map),<span class="fu">extent</span>(common))),<span class="at">ext=</span><span class="fu">extent</span>(common),<span class="at">crs=</span><span class="fu">crs</span>(common),<span class="at">nrows=</span><span class="fu">dim</span>(common)[<span class="dv">1</span>],<span class="at">ncols=</span><span class="fu">dim</span>(common)[<span class="dv">2</span>])</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>files<span class="ot">=</span><span class="fu">list.files</span>(<span class="st">"./"</span>, <span class="at">pattern =</span> <span class="st">"grd"</span>)</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">lapply</span>(files, function_rebuild) </span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">"stack"</span>,r) </span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>pca1 <span class="ot">&lt;-</span> <span class="fu">rasterPCA</span>(<span class="fu">scale</span>(x))</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>coordinates<span class="ot">=</span>DAPC</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>cord.dec <span class="ot">=</span> <span class="fu">SpatialPoints</span>(<span class="fu">cbind</span>(coordinates<span class="sc">$</span>LON,coordinates<span class="sc">$</span>LAT),<span class="at">proj4string=</span><span class="fu">CRS</span>(<span class="st">"+proj=longlat"</span>))</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>coord_utm<span class="ot">=</span><span class="fu">spTransform</span>(cord.dec, <span class="fu">CRS</span>(<span class="st">"+init=epsg:32610 + south +zone=40"</span>))</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>coordinates<span class="sc">$</span>LON<span class="ot">=</span>coord_utm<span class="sc">@</span>coords[,<span class="dv">1</span>]<span class="sc">/</span><span class="dv">100</span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>coordinates<span class="sc">$</span>LAT<span class="ot">=</span>coord_utm<span class="sc">@</span>coords[,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">100</span></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>pca1<span class="sc">$</span>map, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> PC1)) <span class="sc">+</span></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"darkblue"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/spatial%20PCA-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>pca1<span class="sc">$</span>map, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> PC2)) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"darkblue"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/spatial%20PCA-2.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      coords.x1 coords.x2
- [1,]  364160.1   7663949
- [2,]  344391.7   7641825
- [3,]  339656.4   7686514
- [4,]  348108.5   7642736
- [5,]  358128.9   7683059
- [6,]  352367.1   7655456
- [7,]  359607.8   7675636
- [8,]  359382.0   7675528
- [9,]  355853.1   7685794
-[10,]  365353.5   7668554
-[11,]  359677.7   7685076
-[12,]  345692.0   7688998
-[13,]  355030.1   7686051
-[14,]  331940.7   7648457
-[15,]  360335.9   7676428
-[16,]  363856.1   7664748
-[17,]  339692.0   7652465
-[18,]  339662.5   7652926
-[19,]  359776.0   7685056
-[20,]  343671.1   7645300
-[21,]  359709.1   7685148
-[22,]  343137.2   7639580
-[23,]  359857.0   7678642
-[24,]  363956.4   7664826
-[25,]  325988.5   7660740
-[26,]  320220.6   7667633
-[27,]  360807.1   7675178
-[28,]  339573.5   7645547
-[29,]  359741.9   7685078
-[30,]  358236.3   7641446
-[31,]  363867.0   7664244
-[32,]  369688.1   7637510
-[33,]  355966.2   7678802
-[34,]  360807.1   7675178
-[35,]  351977.7   7639261
-[36,]  359098.7   7677297
-[37,]  350107.0   7637983
-[38,]  363770.9   7664200
-[39,]  344067.4   7649907
-[40,]  331279.9   7648992
-[41,]  361677.7   7675443
-[42,]  359352.4   7677260
-[43,]  343060.6   7681050
-[44,]  346688.6   7671294
-[45,]  340110.2   7689081
-[46,]  361979.9   7676100
-[47,]  328161.1   7677986
-[48,]  359352.4   7677260
-[49,]  376123.7   7653622
-[50,]  361505.4   7674831
-[51,]  360651.3   7666488
-[52,]  359482.2   7675588
-[53,]  359759.7   7685003
-[54,]  325440.0   7661037
-[55,]  324072.8   7666726
-[56,]  342905.5   7660660
-[57,]  359444.4   7677457
-[58,]  324814.8   7655487
-[59,]  360054.0   7678589
-[60,]  317486.0   7672287</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="R_scripts_files/figure-html/spatial%20PCA-3.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="R_scripts_files/figure-html/spatial%20PCA-4.png" class="img-fluid" width="672"></p>
-</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeRaster</span>(pca1<span class="sc">$</span>map<span class="sc">$</span>PC1, <span class="at">filename=</span><span class="st">"~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/PC_grids_climate/PC1.grd"</span>, <span class="at">datatype=</span><span class="st">'INT4S'</span>, <span class="at">overwrite=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>class      : RasterLayer 
 dimensions : 463, 514, 237982  (nrow, ncol, ncell)
@@ -645,6 +623,7 @@ source     : PC1.grd
 names      : PC1 
 values     : -7, 6  (min, max)</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeRaster</span>(pca1<span class="sc">$</span>map<span class="sc">$</span>PC2, <span class="at">filename=</span><span class="st">"~/Desktop/CurrentWORK/Harrier_project/Harrier_scripts_Github/Scripts_harrier/Landscape_genetics_scripts/PC_grids_climate/PC2.grd"</span>, <span class="at">datatype=</span><span class="st">'INT4S'</span>, <span class="at">overwrite=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>class      : RasterLayer 
 dimensions : 463, 514, 237982  (nrow, ncol, ncell)
@@ -658,18 +637,41 @@ values     : -5, 9  (min, max)</code></pre>
 </div>
 <p>We can now run the radish analysis. We need the maps with the PC projections, the coordinates (UTM), and a matrix of genetic distances.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">paste</span>(PATH,<span class="st">"Scripts_harrier/Landscape_genetics_scripts/"</span>,<span class="at">sep=</span><span class="st">""</span>))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>files<span class="ot">=</span><span class="fu">c</span>(<span class="st">"PC_grids_climate/PC1.grd"</span>,<span class="st">"PC_grids_climate/PC2.grd"</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">lapply</span>(files, raster) </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>environment <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">"stack"</span>,tmp) </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>genetic_distances<span class="ot">=</span><span class="fu">as.matrix</span>(<span class="fu">bitwise.dist</span>(pca.rubi))</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="do">##Reorder coordinates so the order of individuals matches with the genetic distance matrix</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>coordinates<span class="ot">=</span>coordinates[<span class="fu">match</span>(<span class="fu">rownames</span>(genetic_distances), coordinates<span class="sc">$</span>ind), ]  </span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">rownames</span>(genetic_distances),coordinates<span class="sc">$</span>ind) <span class="do">##Should be TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="do">###We can plot the grid file we produced before</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>environment, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> PC1)) <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"darkblue"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/radish2-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>spatial_coord<span class="ot">=</span><span class="fu">SpatialPoints</span>(coordinates[,<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>)],<span class="at">proj4string=</span><span class="fu">CRS</span>(<span class="st">"+init=epsg:32610 + south +zone=40"</span>))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>surface <span class="ot">&lt;-</span> <span class="fu">conductance_surface</span>(environment,spatial_coord, <span class="at">directions =</span> <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can then fit the model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Radish MLPE model</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>fit_mlpe <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1 <span class="sc">+</span> PC2, surface, </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                   radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Radish MLPE model</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>fit_mlpe <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1 <span class="sc">+</span> PC2, surface, </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                   radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Projected Newton-Raphson with Hager-Zhang line search
 [1] f(x) = 7.467e+03   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 2.115e+02   |f''(x)| = -1.756e+06 
@@ -679,7 +681,7 @@ values     : -5, 9  (min, max)</code></pre>
 [5] f(x) = 7.490e+03   |f(x)-fold(x)| = 2.456e-11   max|f'(x)| = 1.868e-10   |f''(x)| = -1.323e+06 
 Solution on interior with `max(abs(gradient))` == 1.868489e-10 and `diff(f)` == 2.455636e-11 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Conductance surface with 143049 vertices (60 focal) estimated by maximum likelihood
 Call:   radish(formula = genetic_distances ~ PC1 + PC2, data = surface, 
@@ -709,34 +711,34 @@ PC2 -0.1961213</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vizualisation:</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(fit_mlpe, <span class="st">"distance"</span>), genetic_distances, <span class="at">pch =</span> <span class="dv">19</span>,</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Optimized resistance distance"</span>, <span class="at">ylab =</span> <span class="st">"Genetic distance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vizualisation:</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(fit_mlpe, <span class="st">"distance"</span>), genetic_distances, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Optimized resistance distance"</span>, <span class="at">ylab =</span> <span class="st">"Genetic distance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualise estimated conductance surface and asymptotic confidence intervals</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>fitted_conductance <span class="ot">&lt;-</span> <span class="fu">conductance</span>(surface, fit_mlpe, <span class="at">quantile =</span> <span class="fl">0.95</span>)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>fitted_conductance, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> est)) <span class="sc">+</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">1.25</span>, <span class="at">low=</span><span class="st">"darkblue"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualise estimated conductance surface and asymptotic confidence intervals</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>fitted_conductance <span class="ot">&lt;-</span> <span class="fu">conductance</span>(surface, fit_mlpe, <span class="at">quantile =</span> <span class="fl">0.95</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>fitted_conductance, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> est)) <span class="sc">+</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">1.25</span>, <span class="at">low=</span><span class="st">"darkblue"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>We can then run a few model comparisons</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model selection:</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a reduced model without "PC2" covariate, and compare to </span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># full model via a likelihood ratio test</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>fit_mlpe_reduced <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1, surface, </span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>                           radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model selection:</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a reduced model without "PC2" covariate, and compare to </span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co"># full model via a likelihood ratio test</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>fit_mlpe_reduced <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1, surface, </span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>                           radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Projected Newton-Raphson with Hager-Zhang line search
 [1] f(x) = 7.467e+03   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 5.438e+01   |f''(x)| = -1.544e+03 
@@ -745,7 +747,7 @@ PC2 -0.1961213</code></pre>
 [4] f(x) = 7.468e+03   |f(x)-fold(x)| = 3.010e-10   max|f'(x)| = 1.296e-09   |f''(x)| = -1.373e+03 
 Solution on interior with `max(abs(gradient))` == 1.296211e-09 and `diff(f)` == 3.010427e-10 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_mlpe, fit_mlpe_reduced)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_mlpe, fit_mlpe_reduced)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Likelihood ratio test
 Null: ~ PC1
@@ -756,10 +758,10 @@ Alt  7489.6  6 43.316         1 4.657e-11 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test against null model of IBD</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>fit_mlpe_ibd <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> <span class="dv">1</span>, surface, </span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                       radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_mlpe, fit_mlpe_ibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test against null model of IBD</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>fit_mlpe_ibd <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> <span class="dv">1</span>, surface, </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                       radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>mlpe)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_mlpe, fit_mlpe_ibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Likelihood ratio test
 Null: ~ 1
@@ -773,6 +775,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>Now the same scripts, for the Generalized Wishart model</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Generalized Wishart model</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>fit_wishart <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1 <span class="sc">+</span> PC2, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>                   radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Projected Newton-Raphson with Hager-Zhang line search
 [1] f(x) = 4.719e+05   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 7.638e+03   |f''(x)| = -2.247e+09 
@@ -782,6 +787,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 [5] f(x) = 4.726e+05   |f(x)-fold(x)| = 1.106e-09   max|f'(x)| = 5.429e-09   |f''(x)| = -1.440e+09 
 Solution on interior with `max(abs(gradient))` == 5.428504e-09 and `diff(f)` == 1.105946e-09 </code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_wishart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Conductance surface with 143049 vertices (60 focal) estimated by maximum likelihood
 Call:   radish(formula = genetic_distances ~ PC1 + PC2, data = surface, 
@@ -812,32 +818,32 @@ PC2 0.02812941</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vizualisation:</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(fit_wishart, <span class="st">"distance"</span>), genetic_distances, <span class="at">pch =</span> <span class="dv">19</span>,</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Optimized resistance distance"</span>, <span class="at">ylab =</span> <span class="st">"Genetic distance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vizualisation:</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(fit_wishart, <span class="st">"distance"</span>), genetic_distances, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Optimized resistance distance"</span>, <span class="at">ylab =</span> <span class="st">"Genetic distance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualise estimated conductance surface and asymptotic confidence intervals</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>fitted_conductance <span class="ot">&lt;-</span> <span class="fu">conductance</span>(surface, fit_wishart, <span class="at">quantile =</span> <span class="fl">0.95</span>)</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>fitted_conductance, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> est)) <span class="sc">+</span></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">1.5</span>, <span class="at">low=</span><span class="st">"darkblue"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualise estimated conductance surface and asymptotic confidence intervals</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>fitted_conductance <span class="ot">&lt;-</span> <span class="fu">conductance</span>(surface, fit_wishart, <span class="at">quantile =</span> <span class="fl">0.95</span>)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">data =</span>fitted_conductance, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> est)) <span class="sc">+</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span> </span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates,<span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT), <span class="at">size =</span> <span class="dv">4</span>,<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>coordinates, <span class="fu">aes</span>(<span class="at">x =</span> LON, <span class="at">y =</span> LAT,<span class="at">color=</span>Cluster_1), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Longitude"</span>) <span class="sc">+</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Latitude"</span>) <span class="sc">+</span> </span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_color_gradient2</span>(<span class="at">midpoint=</span><span class="fl">0.5</span>, <span class="at">low=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"green"</span>, <span class="at">space =</span><span class="st">"Lab"</span> ) <span class="sc">+</span> <span class="fu">scale_fill_gradient2</span>(<span class="at">midpoint=</span><span class="fl">1.5</span>, <span class="at">low=</span><span class="st">"darkblue"</span>, <span class="at">mid=</span><span class="st">"white"</span>,<span class="at">high=</span><span class="st">"red"</span>,<span class="at">na.value=</span><span class="fu">adjustcolor</span>(<span class="st">"white"</span>,<span class="at">alpha.f=</span><span class="fl">0.2</span>), <span class="at">space =</span><span class="st">"Lab"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="R_scripts_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>We can then run a few model comparisons</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>fit_wishart_reduced <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                           radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>fit_wishart_reduced <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> PC1, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>                           radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Projected Newton-Raphson with Hager-Zhang line search
 [1] f(x) = 4.719e+05   |f(x)-fold(x)| = 0.000e+00   max|f'(x)| = 7.638e+03   |f''(x)| = -4.696e+04 
@@ -846,7 +852,7 @@ PC2 0.02812941</code></pre>
 [4] f(x) = 4.725e+05   |f(x)-fold(x)| = 9.115e-06   max|f'(x)| = 1.139e-08   |f''(x)| = -3.536e+04 
 Solution on interior with `max(abs(gradient))` == 1.138946e-08 and `diff(f)` == 9.115261e-06 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_wishart, fit_wishart_reduced)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_wishart, fit_wishart_reduced)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Likelihood ratio test
 Null: ~ PC1
@@ -857,10 +863,10 @@ Alt  472589  4 184.02         1 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test against null model of IBD</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>fit_wishart_ibd <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> <span class="dv">1</span>, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                       radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_wishart, fit_wishart_ibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test against null model of IBD</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>fit_wishart_ibd <span class="ot">&lt;-</span> <span class="fu">radish</span>(genetic_distances <span class="sc">~</span> <span class="dv">1</span>, surface,<span class="at">nu=</span><span class="dv">7955</span>, </span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>                       radish<span class="sc">::</span>loglinear_conductance, radish<span class="sc">::</span>generalized_wishart)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_wishart, fit_wishart_ibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Likelihood ratio test
 Null: ~ 1
