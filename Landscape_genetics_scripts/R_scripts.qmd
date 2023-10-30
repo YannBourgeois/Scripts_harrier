@@ -267,7 +267,7 @@ boot.ppfis(dat)
 
 To install the EEMS library, the following command can be used (Linux distribution)
 
-```{r eems, include=FALSE}
+```{r eems}
 #| warning: false
 #| error: false
 setwd(paste(PATH,"Scripts_harrier/Landscape_genetics_scripts/EEMS",sep=""))
