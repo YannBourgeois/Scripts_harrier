@@ -55,7 +55,7 @@ sed -i -e "s:0\tOV839367.1:36\tOV839367.1:" trial*.map
 sed -i -e "s:0\tOV839368.1:37\tOV839368.1:" trial*.map
 sed -i -e "s:0\tOV839369.1:38\tOV839369.1:" trial*.map
 sed -i -e "s:\t: :g" trial*.*
-sed -i -e 's/R1 0 0 0 0/R1 0 0 0 -9 /' trial*.ped  ###No sex indication. Sex chromosome is excluded from analyses 
+sed -i -e 's/R1 0 0 0 0/R1 0 0 0 -9 /' trial*.ped  ###No sex indication. Sex chromosomes (OV839360.1 and OV839371.1) are excluded from analyses 
 
 
 ###GONe extracts the number of chromosomes by looking at the number starting the last row, so that needs to be carefully ordered
