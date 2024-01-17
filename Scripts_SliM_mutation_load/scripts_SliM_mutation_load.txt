@@ -1,0 +1,94 @@
+Population size changes in the script below are based on inference from stairwayv2 for 
+
+
+#############Population size changes in the script below are based on inference from stairwayv2 for the whole island. 
+
+initialize() {
+initializeMutationRate(1.3e-8);
+initializeMutationType("m1", 0, "g", mean_sel,shape_sel);
+m1.convertToSubstitution = F; ///if converted to substitution, it does not have any fitness effect anymore in SliM (W-F)
+initializeGenomicElementType("g1", m1,1);
+initializeGenomicElement(g1, 0, 9000000);
+//we do not model introns. Recombination rate (average) is 3e-8/generation between two positions. 60,000 exons of 150bp, so average length of introns is ca 1.191e9/59999, about 20kb.
+//. Effective rec rate between exons is then 3e-8*20e3 = 6e-04 events/gen
+rates=c(rep(c(0,6e-4),59999),0);
+pos=sort(c(seq(150,8999999,150),seq(151,9000000,150),9000000));
+initializeRecombinationRate(rates,pos);
+}
+1 { sim.addSubpop("p1", 3400);///Ancestral population. 10N generations of burnin
+}
+1000 late() {cat(sim.generation + "\n");} //not needed, but useful to check speed and progress
+34000 late() {
+g = p1.sampleIndividuals(5).genomes;// We sample 5 individuals before the bottleneck
+g.outputVCF(filePath="simulation_past.vcf");//VCF file but can be changed to ms-style format, or any format useful to compute summary stats.
+}
+34001:37460 {
+ p1.setSubpopulationSize(2850);
+}
+37461:37480 {
+ p1.setSubpopulationSize(2238);
+}
+37481:37660 {
+ p1.setSubpopulationSize(1306);
+}
+37481:37660 {
+ p1.setSubpopulationSize(726);
+}
+37661:37750 {
+ p1.setSubpopulationSize(630);
+}
+37751:37790 {
+ p1.setSubpopulationSize(557);
+}
+37791:37820 {
+ p1.setSubpopulationSize(517);
+}
+
+37821:37830 {
+ p1.setSubpopulationSize(470);
+}
+
+37831:37835 {
+ p1.setSubpopulationSize(315);
+}
+
+37835 late() {
+        g =p1.sampleIndividuals(5).genomes;// We sample individuals before the bottleneck
+        g.outputVCF(filePath="simulation_present.vcf");//VCF file but can be changed to ms-style format, or any format useful to compute summary stats.
+}
+
+
+
+
+#####SLURM script for 500 simulations.
+
+
+#!/bin/bash
+#SBATCH --mem=2G
+#SBATCH -p sciama3.q ###As usual, change this to suit your own cluster.
+# Set number of nodes to run
+#SBATCH --nodes=1
+# Set number of tasks to run
+# Set number of cores per task (default is 1)
+#SBATCH --array=1-500      # 500 replicates
+# Walltime format hh:mm:ss
+#SBATCH --time=24:00:00
+# Output and error files
+#SBATCH -o job.%J.out
+#SBATCH -e job.%J.err
+# **** Put all #SBATCH directives above this line! ****
+# **** Otherwise they will not be in effective! ****
+#
+# **** Actual commands start here ****
+# Load modules here (safety measure)
+
+mkdir simulation_${SLURM_ARRAY_TASK_ID}
+cp slim_script_harrier.slim simulation_${SLURM_ARRAY_TASK_ID}
+cd simulation_${SLURM_ARRAY_TASK_ID}
+slim -d mean_sel=-0.05 -d shape_sel=0.2 slim_script_harrier.slim
+
+
+
+####The resulting VCF file has information about the selective coefficient and the genotypes. 
+
+

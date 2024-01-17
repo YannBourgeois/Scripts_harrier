@@ -1,0 +1,170 @@
+###Scripts from Quentin Rougemont. We recalled SNPs with invariant positions (option -all-sites) and parallelized over 20 subsets.
+
+git clone https://github.com/QuentinRougemont/PiNPiS.git
+
+####Note: error in the script # 002, inversion when calling python scripts for gzipped and unzipped files (if zipped, calls unzipped script and vice vera).
+
+
+######################We first convert the VCF into a FASTA alignment (lasts about one or two hours)
+
+#!/bin/bash
+#SBATCH --mem=32G
+#SBATCH -p sciama2.q  ####change the queue name to match your own cluster.
+# Set number of nodes to run
+#SBATCH --nodes=1
+# Set number of tasks to run
+#SBATCH --array=1-20       # 10 intervals
+# Set number of cores per task (default is 1)
+#SBATCH --cpus-per-task=1
+# Walltime format hh:mm:ss
+#SBATCH --time=12:00:00
+# Output and error files
+#SBATCH -o job.%J.out
+#SBATCH -e job.%J.err
+# **** Put all #SBATCH directives above this line! ****
+# **** Otherwise they will not be in effective! ****
+#
+# **** Actual commands start here ****
+# Load modules here (safety measure)
+module load anaconda/2019.03 ####You probably do not need this module
+
+PATH_TO_GZVCF="/mnt/lustre/yb24/Harrier_analyses/RNAseq/RNA_seq_alignment/Gentilis_analysis" ###Change this to suit your needs
+mkdir ${PATH_TO_GZVCF}/FASTA_${SLURM_ARRAY_TASK_ID}
+cp -r ${PATH_TO_GZVCF}/PiNPiS ${PATH_TO_GZVCF}/FASTA_${SLURM_ARRAY_TASK_ID}
+cd ${PATH_TO_GZVCF}/FASTA_${SLURM_ARRAY_TASK_ID}/PiNPiS
+./00_scripts/00_scripts_wgs/02_vcf2fasta.sh ${PATH_TO_GZVCF}/fivesamples_interval_${SLURM_ARRAY_TASK_ID}.vcf.gz 20 8 500
+
+
+###Min Genotype Qual of 20, minimal total (not individual) depth of 8X, maximum total depth of 500X (100X average per individual)
+
+###Issue in the script is that it removes sites that do not have the PASS flag, see L155:
+				if arrline[6] != "PASS" : # exclude lowQ SNP
+					for i in range(0, len(nameSeq)):
+						site.append("N")				
+###I edited this part to avoid the issue (now it is if arrline[6] == "LowQual").
+
+						
+PiNPiS/00_scripts/00_scripts_wgs/04_prepare_gff.sh GCF_929443795.1_bAccGen1.1_genomic.gff
+###Outputs a list of scaffolds with CDS named GCF_929443795.1_bAccGen1.1_genomic.gff.gz.scaffIDwithCDS
+###zipped version of the script does not work. So we unzip the GFF file, and rename GCF_929443795.1_bAccGen1.1_genomic.gff.gz.scaffIDwithCDS GCF_929443795.1_bAccGen1.1_genomic.gff.scaffIDwithCDS
+
+
+####Remove C_melano from the alignment, sequences are the third and the fourth, corresponding to lines 5,6,7 and 8.
+for i in {1..20}
+do 
+cd /mnt/lustre/yb24/Harrier_analyses/RNAseq/RNA_seq_alignment/Gentilis_analysis/FASTA_${i}/PiNPiS/
+mkdir Alignment_with_outgroup
+mkdir fasta_files_withoutquantiles_scaffold
+for i in *.fst
+do
+sed -n -e 1,4p -e 9,24p $i > 2_$i
+mv $i Alignment_with_outgroup
+mv 2_$i $i
+done
+mv *.fst fasta_files_withoutquantiles_scaffold
+done
+
+
+
+#!/bin/bash
+#SBATCH --mem=32G
+#SBATCH -p sciama2.q  ####change the queue name to match your own cluster.
+# Set number of nodes to run
+#SBATCH --nodes=1
+# Set number of tasks to run
+#SBATCH --array=1-20       # 10 intervals
+# Set number of cores per task (default is 1)
+#SBATCH --cpus-per-task=1
+# Walltime format hh:mm:ss
+#SBATCH --time=12:00:00
+# Output and error files
+#SBATCH -o job.%J.out
+#SBATCH -e job.%J.err
+# **** Put all #SBATCH directives above this line! ****
+# **** Otherwise they will not be in effective! ****
+#
+# **** Actual commands start here ****
+# Load modules here (safety measure)
+module load anaconda/2019.03
+
+PATH_TO_GFF="/mnt/lustre/yb24/Harrier_analyses/RNAseq/RNA_seq_alignment/Gentilis_analysis"
+
+cd ${PATH_TO_GFF}/FASTA_${SLURM_ARRAY_TASK_ID}/PiNPiS/
+00_scripts/00_scripts_wgs/05_fasta_to_CDS_to_stats.sh ${PATH_TO_GFF}/GCF_929443795.1_bAccGen1.1_genomic.gff
+
+
+###This individual should also be excluded : 
+###DA252517
+
+for i in {2..20}
+do 
+cd /mnt/lustre/yb24/Harrier_analyses/RNAseq/RNA_seq_alignment/Gentilis_analysis/FASTA_${i}/PiNPiS/
+mkdir Alignment_with_DA252517
+mv fasta_files_withoutquantiles_scaffold/*fst .
+rm POP*
+rm -rf fasta_files_withoutquantiles_*
+mkdir fasta_files_withoutquantiles_scaffold
+for i in *.fst
+do
+sed -n -e 1,4p -e 9,20p $i > 2_$i
+mv $i Alignment_with_DA252517
+mv 2_$i $i
+done
+mv *.fst fasta_files_withoutquantiles_scaffold
+done
+
+
+####Create a file listing to which gene each CDS belongs:
+grep "ID=cds" GCF_929443795.1_bAccGen1.1_genomic.gff | cut -f9 | cut -f1,6 -d ";" | sed "s:;:\t:g" | sed "s:ID=cds-::" |sed "s:gene=::" | sort -k1 | uniq > correspondance_gene_cds.txt
+
+
+
+#######Calculation of PiN/PiS per locus can be obtained with Rougemont's last script, but easy to do in R too. Relevant lines of the Python script are below:
+
+pNseq=$(awk '{s+=$8} END {print s}' $myfile | awk '{printf "%.1f\n", $1}')
+pSseq=$(awk '{s+=$7} END {print s}' $myfile | awk '{printf "%.1f\n", $1}')
+NbSynSites=$(awk '{s+=$9} END {print s}' $myfile | awk '{printf "%.1f\n", $1}')
+totallength=$(awk '{s+=$2} END {print s}' $myfile | awk '{printf "%.1f\n", $1}')
+pSratio=$(echo "scale=8; ($pSseq/$NbSynSites)" | bc)
+pNratio=$(echo "scale=8; ($pNseq/($totallength-$NbSynSites))" | bc)
+pNpSratio=$(echo "scale=6; ($pNseq/($totallength-$NbSynSites))/($pSseq/$NbSynSites)" | bc)
+
+echo "$myfile	$pNseq	$pSseq	$NbSynSites	$totallength	$pSratio	$pNratio	$pNpSratio" >> pnps.txt
+##################################################################################################################################################
+
+#####This step in R
+
+library(dplyr)
+
+table=read.table("Results_PiNPiS.txt",h=T)
+#table=read.table("Results_4_individuals_4foldsites.txt",h=T)
+table$PiNPiS=(table$Pn/(table$Size-table$NbSS))/(table$Ps/table$NbSS)
+
+###Calculate total PiNPiS
+correspondance=read.table("correspondance_gene_cds.txt",h=T)
+
+table2=merge(table,correspondance,by="name")
+table2=table2[order(table2$gene),]
+
+###We only keep one of the longest transcripts for each gene
+
+table2 %>%
+  arrange(desc(Size)) %>%
+  distinct(gene, .keep_all = TRUE) %>%
+  group_by(gene) -> tmp
+
+###Calculation of PiN/PiS and PiS for all concatenated transcriptsm
+sum(tmp$Pn)/(sum(tmp$Size-tmp$NbSS))/(sum(tmp$Ps)/sum(tmp$NbSS))
+sum(tmp$Ps)/sum(tmp$NbSS)
+
+###Check PiN/PiS without all alternate transcripts.
+sum(table$Pn)/(sum(table$Size-table$NbSS))/(sum(table$Ps)/sum(table$NbSS))
+
+
+
+temp2=subset(tmp,tmp$Ps>0)
+mean(temp2$PiNPiS)
+cor.test(temp2$D_Taj,temp2$PiNPiS) ###Very clear and significant positive correlation (strong purifying selection > low Tajima and low PiN/PiS).
+
+
+

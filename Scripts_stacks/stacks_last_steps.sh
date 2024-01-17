@@ -21,3 +21,5 @@ cstacks -P ${FOLDER} -M ./populations_cstacks.txt -n ${N_VALUE} -p 10
 sstacks -P ${FOLDER} -M populations_cstacks.txt -p 10
 tsv2bam -P ${FOLDER} -R ${PATH_TO_SAMPLES} -M populations_cstacks.txt -t 10
 gstacks -P ${FOLDER} -M populations_cstacks.txt -t 10
+populations -P ${FOLDER} -M populations_cstacks.txt -p 10 --vcf
+
